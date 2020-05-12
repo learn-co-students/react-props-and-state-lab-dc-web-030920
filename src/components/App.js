@@ -15,14 +15,10 @@ class App extends React.Component {
     }
   }
 
-  onAdoptPet = (event) => {
-    console.log(event.target.id)
-    // ? pet.isAdopted = true : pet.isAdopted = False )
+  onAdoptPet = (id) => {
     const new_array = this.state.pets
-    const index = new_array.findIndex(pet => pet.id === event.target.id) 
+    const index = new_array.findIndex(pet => pet.id === id) 
     new_array[index].isAdopted = true
-    // pet.isAdopted = true
-
     this.setState({
       pets: new_array 
     })
@@ -66,7 +62,7 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters onChangeFunc={this.onChangeType} filterPets={this.onFindPetsClick} />
+              <Filters onChangeType={this.onChangeType} onFindPetsClick={this.onFindPetsClick} />
             </div>
             <div className="twelve wide column">
               <PetBrowser onAdoptPet={this.onAdoptPet} pets={this.state.pets} />
