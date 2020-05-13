@@ -15,6 +15,41 @@ class App extends React.Component {
     }
   }
 
+  selectChange = (event) => {
+    this.setState({filters: {type: event.target.value}})
+  }
+
+  fetchPets = () => {
+    if(this.state.filters.type === 'all'){
+      fetch("/api/pets")
+    .then(resp => resp.json())
+    .then(data => this.setState({pets: data}))
+    }else{
+      fetch(`/api/pets?type=${this.state.filters.type}`)
+      .then(resp => resp.json())
+      .then(data => {this.setState({pets: data})})
+    }
+    
+  }
+
+  changeAdopt = (event) => {
+    let mary = this.state.pets.find(pet => pet.id === event.target.id)
+    let index = this.state.pets.indexOf(mary)
+    let pets = [...this.state.pets];
+    // 2. Make a shallow copy of the item you want to mutate
+    let pet = {...pets[index]};
+    // 3. Replace the property you're intested in
+    pet.isAdopted = true;
+    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+    pets[index] = pet;
+    // 5. Set the state to our new copy
+
+    if(event.target.innerText === "Adopt pet"){
+      this.setState({pets});
+    }
+  }
+
+
   render() {
     return (
       <div className="ui container">
@@ -24,10 +59,10 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters onChangeType={this.selectChange} onFindPetsClick={this.fetchPets} />
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets} onAdoptPet={this.changeAdopt}/>
             </div>
           </div>
         </div>
